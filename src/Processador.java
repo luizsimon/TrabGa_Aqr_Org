@@ -2,8 +2,8 @@ import java.util.Arrays;
 
 public class Processador {
 	public String instrucoesexecutando[], instrucoes[];
-	public int[] registradores, instrucaoPronta, memoria, instrucoesDecodificadas;
-	public int pc, semiAcabou, acabou, enderecoMemoria, resultadoOperacao;
+	public int[] registradores, instrucaoPronta, memoria, instrucoesDecodificadas, enderecoMemoria;
+	public int pc, semiAcabou, acabou, resultadoOperacao;
 
 	public Processador(String instr[]) {
 		this.instrucoesexecutando = new String[5];
@@ -11,6 +11,7 @@ public class Processador {
 		this.registradores = new int[32];
 		this.memoria = new int[128];
 		this.instrucaoPronta = new int[4];
+		this.enderecoMemoria = new int[2];
 		this.instrucoes = instr;
 		this.pc = 0;
 		this.acabou = 0;
@@ -102,12 +103,14 @@ public class Processador {
 			System.out.println("Executando instrução: " + Arrays.toString(instrucaoPronta));
 			switch(instrucaoPronta[0]) {
 				case(0): // lw
-					enderecoMemoria = registradores[instrucaoPronta[1]] + instrucaoPronta[3];
-					System.out.println("LW: Endereço de memória: " + enderecoMemoria);
+					enderecoMemoria[0] = registradores[instrucaoPronta[1]] + instrucaoPronta[3];
+					enderecoMemoria[1] = enderecoMemoria[0];
+					System.out.println("LW: Endereço de memória: " + enderecoMemoria[0]);
 					break;
 				case(1): // sw
-					enderecoMemoria = registradores[instrucaoPronta[1]] + instrucaoPronta[3];
-					System.out.println("SW: Endereço de memória: " + enderecoMemoria + ", Valor: " + registradores[instrucaoPronta[2]]);
+					enderecoMemoria[0] = registradores[instrucaoPronta[1]] + instrucaoPronta[3];
+					enderecoMemoria[1] = enderecoMemoria[0];
+					System.out.println("SW: Endereço de memória: " + enderecoMemoria[0] + ", Valor: " + registradores[instrucaoPronta[2]]);
 					break;
 				case(2): // add
 					resultadoOperacao = registradores[instrucaoPronta[1]] + registradores[instrucaoPronta[2]];
@@ -123,7 +126,7 @@ public class Processador {
 							instrucoesexecutando[i] = null;
 						}
 
-						pc = registradores[instrucaoPronta[3]] + 4;
+						pc = instrucaoPronta[3] - 1;
 						System.out.println("BEQ: Branch taken, PC set to: " + pc);
 					} else {
 						System.out.println("BEQ: Branch not taken");
@@ -145,13 +148,13 @@ public class Processador {
 					if (instrucaoPronta[2] == 0) {
 
 					} else {
-						registradores[instrucaoPronta[2]] = memoria[enderecoMemoria];
-						System.out.println("LW: Registrador[" + instrucaoPronta[2] + "] = " + memoria[enderecoMemoria]);
+						registradores[instrucaoPronta[2]] = memoria[enderecoMemoria[1]];
+						System.out.println("LW: Registrador[" + instrucaoPronta[2] + "] = " + memoria[enderecoMemoria[1]]);
 					}
 					break;
 				case 1: // sw
-					memoria[enderecoMemoria] = registradores[instrucaoPronta[2]];
-					System.out.println("SW: Memória[" + enderecoMemoria + "] = " + registradores[instrucaoPronta[2]]);
+					memoria[enderecoMemoria[1]] = registradores[instrucaoPronta[2]];
+					System.out.println("SW: Memória[" + enderecoMemoria[1] + "] = " + registradores[instrucaoPronta[2]]);
 					break;
 				default:
 					break;
@@ -191,6 +194,14 @@ public class Processador {
 	public void imprimirEstado() {
 		System.out.println("Estado dos Registradores: " + Arrays.toString(registradores));
 		System.out.println("Estado da Memória: " + Arrays.toString(memoria));
+	}
+
+	public void verificarDone() {
+		String verificacaoDone = instrucoes[pc].split(" ")[0];
+
+		if (verificacaoDone.equals("done") ) {
+			acabou = 1;
+		}
 	}
 
 }

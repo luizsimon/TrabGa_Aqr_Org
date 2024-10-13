@@ -18,11 +18,12 @@ public class Main {
             // Espera o usuário pressionar Enter para continuar
             System.out.print("Pressione Enter para continuar...");
             scanner.nextLine(); // Aguarda a entrada do usuário
-            processador.busca();
-        	processador.decodificacao();
-        	processador.execucao();
-        	processador.memoria();
         	processador.wrightback();
+        	processador.memoria();
+        	processador.execucao();
+        	processador.decodificacao();
+            processador.busca();
+            //processador.verificarDone();
             processador.imprimirEstado();
         }
         scanner.close();
