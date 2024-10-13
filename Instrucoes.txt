@@ -5,11 +5,11 @@ noop
 add 2 1 2
 noop
 noop
-beq 2 0 done
+beq 2 0 16
 noop
 noop
 noop
-beq 0 0 loop
+beq 0 0 5
 noop
 noop
 noop
